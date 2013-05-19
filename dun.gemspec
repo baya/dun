@@ -7,5 +7,5 @@ Gem::Specification.new do |s|
   s.authors     = ["Kayak Jiang"]
   s.email       = 'kayak.jiang@gmail.com'
   s.files       = ["lib/dun.rb"]
-  s.homepage    = 'http://rubygems.org/gems/dun'
+  s.homepage    = 'https://github.com/baya/dun'
 end
