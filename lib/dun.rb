@@ -24,7 +24,7 @@ module Dun
       attrs.each do |attr|
         define_method attr do
           instance_variable_get("@#{attr}") || \
-          instance_variable_set("@#{attr}", data[attr.to_sym])
+          instance_variable_set("@#{attr}", data[attr.to_sym] || data[attr.to_s])
         end
       end
       

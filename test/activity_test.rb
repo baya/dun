@@ -110,6 +110,7 @@ class ActivityTest < Test::Unit::TestCase
     assert_equal activity.b, 'b'
     assert_equal activity.c, 'c'
     assert_equal activity.d, 'd'
+
   end
 
   def test_set
