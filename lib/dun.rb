@@ -14,28 +14,46 @@ module Dun
     rescue SyntaxError, TypeError
       
     end
-    
-    def self.<<(data = {})
-      new(data).call
-    end
 
-    def self.data_reader *attrs
+    class << self
+
+      def initializations
+        @initializations ||= []
+      end
       
-      attrs.each do |attr|
-        define_method attr do
-          instance_variable_get("@#{attr}") || \
-          instance_variable_set("@#{attr}", data[attr.to_sym] || data[attr.to_s])
+      def <<(data = {})
+        new(data).call
+      end
+
+      def data_reader *attrs
+        
+        attrs.each do |attr|
+          define_method attr do
+            instance_variable_get("@#{attr}") || \
+            instance_variable_set("@#{attr}", data[attr.to_sym] || data[attr.to_s])
+          end
         end
+        
+      end
+
+      def data_default attr, value
+        self.initializations << [:default, attr, value]
+      end
+      
+      def set attr, value
+        define_method "set_#{attr}" do
+          instance_variable_set "@#{attr}", value
+        end
+        self.initializations << ["set_#{attr}"]
+        
+        attr_reader attr
       end
       
     end
     
-    def self.set name, value
-      define_method(name) { value }
-    end
-
     def initialize(data)
       @data = data
+      self.class.initializations.each {|init|  execute_initialization init }
     end
     
     def call
@@ -44,11 +62,20 @@ module Dun
 
     private
 
-    def get_or_set(name)
-      value = instance_variable_get("@#{name}")
+    def execute_initialization(init)
+      m, *args = init
+      send m, *args
+    end
+
+    def get_or_set(attr, &p)
+      value = instance_variable_get("@#{attr}")
       return value if value
-      value = yield
-      instance_variable_set("@#{name}", value)
+      value = p.call
+      instance_variable_set("@#{attr}", value)
+    end
+
+    def default(attr, value)
+      instance_variable_set "@#{attr}", value if send(attr).nil?
     end
 
   end

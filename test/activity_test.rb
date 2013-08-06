@@ -53,9 +53,19 @@ class F < C::A
 end
 
 class JustReturnActivitySelf < Dun::Activity
-  data_reader :a, :b, :c, :d
+  data_reader :a, :b, :c, :d, :e
+
+  data_default :e, 'e'
 
   set :name, 'name'
+
+  def initialize(data)
+    super
+    default(:a, 'a')
+    default(:b, 'b')
+    default(:c, 'c')
+    default(:d, foo)
+  end
 
   def call
     self
@@ -104,12 +114,16 @@ class ActivityTest < Test::Unit::TestCase
   end
 
   def test_data_reader
-    activity = JustReturnActivitySelf(a: 'a', b: 'b', c: 'c', d: 'd')
+    data = {a: 'a', b: 'b', c: 'c', d: 'd'}
+    activity = JustReturnActivitySelf(data)
     
     assert_equal activity.a, 'a'
     assert_equal activity.b, 'b'
     assert_equal activity.c, 'c'
     assert_equal activity.d, 'd'
+
+    data[:a] = 'aa'
+    assert_equal activity.a, 'a'
 
   end
 
@@ -124,6 +138,16 @@ class ActivityTest < Test::Unit::TestCase
 
     assert_equal activity.foo, 'foo'
     assert_equal activity.instance_variable_get(:@foo), 'foo'
+  end
+
+  def test_default
+    activity = JustReturnActivitySelf(a: 'aa', b: 'bb')
+
+    assert_equal activity.a, 'aa'
+    assert_equal activity.b, 'bb'
+    assert_equal activity.c, 'c'
+    assert_equal activity.d, 'foo'
+    assert_equal activity.e, 'e'
   end
 
 end
