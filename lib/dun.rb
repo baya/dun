@@ -2,12 +2,12 @@ module Dun
   class Activity
     attr_reader :data
 
-    def self.inherited(subclass)
+    def self.inherited subclass
       return if Kernel.method_defined? subclass.name
       
       Kernel.class_eval %Q{
-        def #{subclass.name}(data = {}, &p)
-          #{subclass.name}.new(data).call(&p)
+        def #{subclass.name} data = {}, &p
+          #{subclass.name}.new(data).call &p
         end
       }
 
@@ -17,11 +17,7 @@ module Dun
 
     class << self
 
-      def initializations
-        @initializations ||= []
-      end
-      
-      def <<(data = {})
+      def << data = {}
         new(data).call
       end
 
@@ -42,7 +38,7 @@ module Dun
       
     end
     
-    def initialize(data)
+    def initialize data
       @data = data
     end
     
@@ -52,17 +48,15 @@ module Dun
 
     private
 
-    def get_or_set(attr, &p)
-      value = instance_variable_get("@#{attr}")
+    def get_or_set attr, &p
+      value = instance_variable_get "@#{attr}"
       return value if value
       value = p.call
-      instance_variable_set("@#{attr}", value)
+      instance_variable_set "@#{attr}", value
     end
 
-    def default(attr, value)
-      if send(attr).nil?
-        instance_variable_set "@#{attr}", value
-      end
+    def default attr, value
+      instance_variable_set "@#{attr}", value if send(attr).nil?
     end
 
   end
