@@ -55,8 +55,6 @@ end
 class JustReturnActivitySelf < Dun::Activity
   data_reader :a, :b, :c, :d, :e
 
-  data_default :e, 'e'
-
   set :name, 'name'
 
   def initialize(data)
@@ -65,6 +63,7 @@ class JustReturnActivitySelf < Dun::Activity
     default(:b, 'b')
     default(:c, 'c')
     default(:d, foo)
+    default(:e, 'e')
   end
 
   def call

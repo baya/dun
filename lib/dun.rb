@@ -29,31 +29,21 @@ module Dun
         
         attrs.each do |attr|
           define_method attr do
-            instance_variable_get("@#{attr}") || \
+            instance_variable_get("@#{attr}") ||\
             instance_variable_set("@#{attr}", data[attr.to_sym] || data[attr.to_s])
           end
         end
         
       end
 
-      def data_default attr, value
-        self.initializations << [:default, attr, value]
-      end
-      
       def set attr, value
-        define_method "set_#{attr}" do
-          instance_variable_set "@#{attr}", value
-        end
-        self.initializations << ["set_#{attr}"]
-        
-        attr_reader attr
+        define_method(attr) {value}
       end
       
     end
     
     def initialize(data)
       @data = data
-      self.class.initializations.each {|init|  execute_initialization init }
     end
     
     def call
@@ -61,11 +51,6 @@ module Dun
     end
 
     private
-
-    def execute_initialization(init)
-      m, *args = init
-      send m, *args
-    end
 
     def get_or_set(attr, &p)
       value = instance_variable_get("@#{attr}")
@@ -75,7 +60,9 @@ module Dun
     end
 
     def default(attr, value)
-      instance_variable_set "@#{attr}", value if send(attr).nil?
+      if send(attr).nil?
+        instance_variable_set "@#{attr}", value
+      end
     end
 
   end
