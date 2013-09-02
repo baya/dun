@@ -1,9 +1,12 @@
 Gem::Specification.new do |s|
   s.name        = 'dun'
-  s.version     = '0.0.1'
-  s.date        = '2013-05-19'
-  s.summary     = "钝"
-  s.description = "帮助Ruby程序员以面向过程的方式解决问题"
+  s.version     = '0.1.1'
+  s.date        = '2013-09-02'
+  s.summary     = "Dun help ruby programers focus on the problem domain directly when programing.
+"
+  s.description = "Dun is a dark color in english, and it is also the pinyin of the chinese character 钝 means not sharp.
+Dun help ruby programers focus on the problem domain directly when programing.
+"
   s.authors     = ["Kayak Jiang"]
   s.email       = 'kayak.jiang@gmail.com'
   s.files       = ["lib/dun.rb"]

@@ -1,6 +1,6 @@
 # Dun(钝)
 Dun is a dark color in english, and it is also the pinyin of the chinese character 钝 means not sharp.
-Dun help us programing focus on the problem domain directly.
+Dun help ruby programers focus on the problem domain directly when programing.
 
 ## Example
 
@@ -21,7 +21,7 @@ Following is the classic codes about authenticate,
   end
 ```
 
-It is ok that we define the class method `authenticate` for the class User to resolve the authenticate problem, but maybe we colud resolve this problem by another new way.
+It is ok that we define the class method `authenticate` for the User class to resolve the authenticate problem, but maybe we colud resolve this problem by another new way.
 
 ```ruby
   class AuthenticateUser < Dun::Activity
