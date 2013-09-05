@@ -44,3 +44,5 @@ It is ok that we define the class method `authenticate` for the User class to re
 
 Using dun, we could abstract the problem domain to a class, and the class could be inherited, could include module etc and the class name will become a global method, you can execute the method everywhere.
 
+## License
+Dun is released under the [MIT License](http://www.opensource.org/licenses/MIT)
