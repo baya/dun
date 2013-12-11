@@ -1,5 +1,6 @@
 # Dun(钝)
-Dun is a dark color in english, and it is also the pinyin of the chinese character 钝 means not sharp.
+[![Gem Version](https://badge.fury.io/rb/dun.png)](http://badge.fury.io/rb/dun)
+
 Dun help ruby programers focus on the problem domain directly when programing.
 
 ## Example
