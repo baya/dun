@@ -1,5 +1,5 @@
 module Dun
-  class Activity
+  class Land
     attr_reader :data
 
     def self.inherited subclass
@@ -32,6 +32,14 @@ module Dun
         
       end
 
+      def default attr, default_value
+        orig_attr = "#{attr}_without_default"
+        alias_method orig_attr, attr
+        define_method attr do
+          send(orig_attr) || default_value
+        end
+      end
+
       def set attr, value
         define_method(attr) {value}
       end
@@ -55,10 +63,12 @@ module Dun
       instance_variable_set "@#{attr}", value
     end
 
-    def default attr, value
-      instance_variable_set "@#{attr}", value if send(attr).nil?
+    def default attr, default_value
+      instance_variable_set "@#{attr}", default_value if send(attr).nil?
     end
 
   end
 
+  Activity = Land
+  
 end

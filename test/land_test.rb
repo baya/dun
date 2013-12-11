@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class A < Dun::Activity
+class A < Dun::Land
 
   def call
     true
@@ -9,7 +9,7 @@ class A < Dun::Activity
 end
 
 module B
-  class A < Dun::Activity
+  class A < Dun::Land
     def call
       true
     end
@@ -17,7 +17,7 @@ module B
 end
 
 module B
-  class H < Dun::Activity
+  class H < Dun::Land
     def call
       true
     end
@@ -25,7 +25,7 @@ module B
 end
 
 class C
-  class A < Dun::Activity
+  class A < Dun::Land
     def call
       true
     end
@@ -33,7 +33,7 @@ class C
 end
 
 class C
-  class D < Dun::Activity
+  class D < Dun::Land
     def call
       true
     end
@@ -52,8 +52,11 @@ class F < C::A
   end
 end
 
-class JustReturnActivitySelf < Dun::Activity
-  data_reader :a, :b, :c, :d, :e
+class JustReturnLandSelf < Dun::Land
+  data_reader :a, :b, :c, :d, :e, :f, :g
+
+  default :f, 'f'
+  default :g, 'g'
 
   set :name, 'name'
 
@@ -64,6 +67,7 @@ class JustReturnActivitySelf < Dun::Activity
     default(:c, 'c')
     default(:d, foo)
     default(:e, 'e')
+    default(:g, 'gg')
   end
 
   def call
@@ -78,9 +82,9 @@ class JustReturnActivitySelf < Dun::Activity
   
 end
 
-class ActivityTest < Test::Unit::TestCase
+class LandTest < Test::Unit::TestCase
 
-  def test_capital_method
+  def test_Capital_method
     assert A()
     assert F()
     assert B::A()
@@ -114,39 +118,49 @@ class ActivityTest < Test::Unit::TestCase
 
   def test_data_reader
     data = {a: 'a', b: 'b', c: 'c', d: 'd'}
-    activity = JustReturnActivitySelf(data)
+    land = JustReturnLandSelf(data)
     
-    assert_equal activity.a, 'a'
-    assert_equal activity.b, 'b'
-    assert_equal activity.c, 'c'
-    assert_equal activity.d, 'd'
+    assert_equal land.a, 'a'
+    assert_equal land.b, 'b'
+    assert_equal land.c, 'c'
+    assert_equal land.d, 'd'
 
     data[:a] = 'aa'
-    assert_equal activity.a, 'a'
+    assert_equal land.a, 'a'
 
   end
 
   def test_set
-    activity = JustReturnActivitySelf(a: 'a')
+    land = JustReturnLandSelf(a: 'a')
 
-    assert_equal activity.name, 'name'
+    assert_equal land.name, 'name'
   end
 
   def test_get_or_set
-    activity = JustReturnActivitySelf()
+    land = JustReturnLandSelf()
 
-    assert_equal activity.foo, 'foo'
-    assert_equal activity.instance_variable_get(:@foo), 'foo'
+    assert_equal land.foo, 'foo'
+    assert_equal land.instance_variable_get(:@foo), 'foo'
   end
 
-  def test_default
-    activity = JustReturnActivitySelf(a: 'aa', b: 'bb')
+  def test_class_default
+    land = JustReturnLandSelf(a: 'aa', b: 'bb')
+    assert_equal land.f, 'f'
+  end
 
-    assert_equal activity.a, 'aa'
-    assert_equal activity.b, 'bb'
-    assert_equal activity.c, 'c'
-    assert_equal activity.d, 'foo'
-    assert_equal activity.e, 'e'
+  def test_instance_default
+    land = JustReturnLandSelf(a: 'aa', b: 'bb')
+
+    assert_equal land.a, 'aa'
+    assert_equal land.b, 'bb'
+    assert_equal land.c, 'c'
+    assert_equal land.d, 'foo'
+    assert_equal land.e, 'e'
+  end
+
+  def test_instance_default_over_class_default
+    land = JustReturnLandSelf(a: 'aa', b: 'bb')
+    assert_equal land.g, 'g'
   end
 
 end
