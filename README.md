@@ -3,7 +3,7 @@
 
 Dun help ruby programers focus on the problem domain directly when programing.
 
-## Example
+## Features
 
 ref: [7 Patterns to Refactor Fat ActiveRecord Models](http://blog.codeclimate.com/blog/2012/10/17/7-ways-to-decompose-fat-activerecord-models/)
 
@@ -51,6 +51,9 @@ ref: [7 Patterns to Refactor Fat ActiveRecord Models](http://blog.codeclimate.co
 	end
 	
   end
+
+  rating = Rating cost: 8
+  
 ```
 
 ### 2. Extract Service Objects
