@@ -51,7 +51,7 @@ module Dun
     end
     
     def call
-      'dun'
+      return self
     end
 
     private
