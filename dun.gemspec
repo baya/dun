@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'dun'
-  s.version     = '0.2.0'
+  s.version     = '0.2.1'
   s.date        = '2013-12-11'
   s.summary     = "Dun help ruby programers focus on the problem domain directly when programing."
   s.description = "Dun help ruby programers focus on the problem domain directly when programing."
