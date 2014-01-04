@@ -18,9 +18,9 @@ Dun help ruby programers focus on the problem domain directly when programing.
 	
   end
 
-  Add a: 1, b: 2      # 3
-  Add << {a: 1, b: 2} # 3
-  Add.new(a: 1, b: 2) # 3
+  Add a: 1, b: 2           # 3
+  Add << {a: 1, b: 2}      # 3
+  Add.new(a: 1, b: 2).call # 3
   
 ```
 
