@@ -1,7 +1,7 @@
 # Dun
 [![Gem Version](https://badge.fury.io/rb/dun.png)](http://badge.fury.io/rb/dun)
 
-Dun help ruby programers focus on the problem domain directly when programing.
+Dun help ruby programers focusing on the problem domain directly.
 
 ## How to use dun
 
