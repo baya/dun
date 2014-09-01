@@ -5,7 +5,7 @@ class A < Dun::Land
   def call
     true
   end
-  
+
 end
 
 module B
@@ -55,9 +55,6 @@ end
 class JustReturnLandSelf < Dun::Land
   data_reader :a, :b, :c, :d, :e, :f, :g
 
-  default :f, 'f'
-  default :g, 'g'
-
   set :name, 'name'
 
   def initialize(data)
@@ -79,7 +76,7 @@ class JustReturnLandSelf < Dun::Land
       'foo'
     end
   end
-  
+
 end
 
 class LandTest < Test::Unit::TestCase
@@ -99,13 +96,13 @@ class LandTest < Test::Unit::TestCase
     assert C::D  a: 'a', b: 'b'
 
     assert A << {}
-    assert B::A << {} 
+    assert B::A << {}
     assert B::H << {}
     assert C::A << {}
     assert C::D << {}
     assert C::D::E << {}
     assert C::D::E << {a: 'a', b: 'b'}
-    
+
   end
 
   def test_class
@@ -119,7 +116,7 @@ class LandTest < Test::Unit::TestCase
   def test_data_reader
     data = {a: 'a', b: 'b', c: 'c', d: 'd'}
     land = JustReturnLandSelf(data)
-    
+
     assert_equal land.a, 'a'
     assert_equal land.b, 'b'
     assert_equal land.c, 'c'
@@ -143,11 +140,6 @@ class LandTest < Test::Unit::TestCase
     assert_equal land.instance_variable_get(:@foo), 'foo'
   end
 
-  def test_class_default
-    land = JustReturnLandSelf(a: 'aa', b: 'bb')
-    assert_equal land.f, 'f'
-  end
-
   def test_instance_default
     land = JustReturnLandSelf(a: 'aa', b: 'bb')
 
@@ -156,11 +148,6 @@ class LandTest < Test::Unit::TestCase
     assert_equal land.c, 'c'
     assert_equal land.d, 'foo'
     assert_equal land.e, 'e'
-  end
-
-  def test_instance_default_over_class_default
-    land = JustReturnLandSelf(a: 'aa', b: 'bb')
-    assert_equal land.g, 'g'
   end
 
 end

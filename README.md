@@ -15,13 +15,13 @@ Dun help ruby programers focusing on the problem domain directly.
     def call
 	  a + b
 	end
-	
+
   end
 
   Add a: 1, b: 2           # 3
   Add << {a: 1, b: 2}      # 3
   Add.new(a: 1, b: 2).call # 3
-  
+
 ```
 
 ### data_reader
@@ -34,14 +34,38 @@ Dun help ruby programers focusing on the problem domain directly.
 
 `data_reader :a, :b` means that Foo will receive data like '{a: _, b: _}', and `a`, `b` each becomes the attribute of class `Foo`.
 
+### patch
+
+```ruby
+  class Foo < Dun::Land
+    data_reader :a, :b
+
+    patch :foo, :bar
+
+    def call
+	  foo
+	  bar
+	end
+
+  end
+
+  class Bar < Foo
+  end
+
+  Bar a: 'a', b: 'b'  # will raise the Dun::Land::MissingPatchedMethodError: Need implementing the patched method :foo in the subclass Bar
+```
+
 ### default
 
 ```ruby
   class Foo < Dun::Land
     data_reader :a, :b
 
-    default :a, 'a'
-	default :b, 'b'
+    def initialize data
+	  super
+      default :a, 'a'
+	  default :b, 'b'
+	end
   end
 ```
 
@@ -82,12 +106,12 @@ Dun help ruby programers focusing on the problem domain directly.
 ```ruby
   class Foo < Dun::Land
     data_reader :a, :b
-    
+
 	def initialize(data)
 	  super
 	  default :a, 'a'
 	end
-    
+
   end
 ```
 
@@ -101,7 +125,7 @@ ref: [7 Patterns to Refactor Fat ActiveRecord Models](http://blog.codeclimate.co
 
 ```ruby
   class Rating < Dun::Land
-  
+
 	include Comparable
 
     data_reader :cost
@@ -141,11 +165,11 @@ ref: [7 Patterns to Refactor Fat ActiveRecord Models](http://blog.codeclimate.co
 	def to_s
 	  @letter.to_s
 	end
-	
+
   end
 
   rating = Rating cost: 8
-  
+
 ```
 
 ### 2. Extract Service Objects
@@ -216,7 +240,7 @@ ref: [7 Patterns to Refactor Fat ActiveRecord Models](http://blog.codeclimate.co
 
   @signup = Signup params[:signup]
   @signup.save
-  
+
 ```
 
 ### 4. Extract Query Objects
@@ -261,12 +285,12 @@ end
 class ActiveUserPolicy < Dun::Land
 
   data_reader :user
-  
+
   def active?
     user.email_confirmed? &&
     user.last_login_at > 14.days.ago
   end
-  
+
 end
 
 ActiveUserPolicy user: @user
@@ -291,7 +315,7 @@ private
 end
 
   FacebookCommentNotifier comment: Comment.new(params[:comment])
-  
+
 ```
 
 ## Process Directly
@@ -304,11 +328,11 @@ end
     def call
 	  send_email address, content, title
 	end
-	
+
   end
 
   SendWarnMail address: 'jim@mail.com', content: 'BOM!', title: 'Test'
-  
+
 ```
 
 ## License
