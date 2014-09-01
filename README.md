@@ -52,7 +52,7 @@ Dun help ruby programers focusing on the problem domain directly.
   class Bar < Foo
   end
 
-  Bar a: 'a', b: 'b'  # will raise the Dun::Land::MissingPatchedMethodError: Need implementing the patched method :foo in the subclass Bar
+  Bar a: 'a', b: 'b'  # will raise Dun::Land::MissingPatchedMethodError: Need implementing the patched method :foo in the subclass Bar
 ```
 
 ### default
