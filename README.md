@@ -78,28 +78,12 @@ Dun help ruby programers focusing on the problem domain directly.
     data_reader :a, :b
 
     set :flag, 'red'
+    set :code, ->{const_get :CODE }
 
   end
 ```
 
 `set :flag 'red'` will define a instance method :flag returning 'red' for the Foo class.
-
-### get_or_set
-
-```ruby
-  class Foo < Dun::Land
-    data_reader :a, :b
-
-    def bar
-	  get_or_set :bar do
-	    complex computing...
-	  end
-	end
-
-  end
-```
-
-`get_or_set :bar, &block` could remember the return value of bar to avoid duplicate computing.
 
 ### instance method: default
 

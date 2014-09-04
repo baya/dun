@@ -16,10 +16,9 @@ end
 class Bar < Foo
 end
 
-class PatchMethodTest < Test::Unit::TestCase
+class DunLandPatchTest < Test::Unit::TestCase
 
-
-  def test_patch_method
+  def test_patch
     assert_raise Dun::Land::MissingPatchedMethodError do
       Bar a: 'a'
     end

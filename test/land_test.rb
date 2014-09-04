@@ -72,16 +72,14 @@ class JustReturnLandSelf < Dun::Land
   end
 
   def foo
-    get_or_set :foo do
-      'foo'
-    end
+    'foo'
   end
 
 end
 
 class LandTest < Test::Unit::TestCase
 
-  def test_Capital_method
+  def test_capital_method
     assert A()
     assert F()
     assert B::A()
@@ -133,12 +131,6 @@ class LandTest < Test::Unit::TestCase
     assert_equal land.name, 'name'
   end
 
-  def test_get_or_set
-    land = JustReturnLandSelf()
-
-    assert_equal land.foo, 'foo'
-    assert_equal land.instance_variable_get(:@foo), 'foo'
-  end
 
   def test_instance_default
     land = JustReturnLandSelf(a: 'aa', b: 'bb')

@@ -35,15 +35,19 @@ module Dun
 
       end
 
-      def set attr, value
-        define_method(attr) {value}
+      def set name, body
+        if body.is_a? Proc
+          define_method name, &body
+        else
+          define_method(name) {body}
+        end
       end
 
       def patch *method_names
         method_names.each do |m|
           define_method m do
             msg = "Need implementing the patched method :#{m} in the subclass #{self.class}"
-            raise MissingPatchedMethodError.new msg
+            raise MissingPatchedMethodError, msg
           end
         end
       end
@@ -60,11 +64,8 @@ module Dun
 
     private
 
-    def get_or_set attr, &p
-      value = instance_variable_get "@#{attr}"
-      return value if value
-      value = p.call
-      instance_variable_set "@#{attr}", value
+    def const_get name
+      self.class.const_get name
     end
 
     def default attr, default_value
@@ -72,7 +73,5 @@ module Dun
     end
 
   end
-
-  Activity = Land
 
 end
