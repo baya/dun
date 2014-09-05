@@ -64,7 +64,7 @@ module Dun
 
     private
 
-    def const_get name
+    def const name
       self.class.const_get name
     end
 

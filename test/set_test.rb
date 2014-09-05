@@ -5,8 +5,8 @@ class FooSet < Dun::Land
   GG = 'gg'
 
   set :f, 'foo'
-  set :b, -> { const_get(:BlaBla) }
-  set :g, -> { const_get(:GG) }
+  set :b, -> { const :BlaBla }
+  set :g, -> { const :GG }
   set :ggg, GG
   set :c, -> { get_c  }
   set :d, -> {'d'}
@@ -50,6 +50,13 @@ class DunLandSetTest < Test::Unit::TestCase
     assert_equal bar.ggg, FooSet::GG
     assert_equal foo.ggg, FooSet::GG
 
+    t0 = Time.now
+    10_000_000.times do
+      bar.b
+    end
+    t1 = Time.now
+
+    puts t1 - t0
   end
 
 end
