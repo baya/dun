@@ -1,8 +1,16 @@
+# -*- coding: utf-8 -*-
 module Dun
   class Land
     attr_reader :data
 
+    class MissingPatchedMethodError < StandardError
+    end
+
+    class TypeCheckError < StandardError
+    end
+
     def self.inherited subclass
+      subclass.args_with_type.merge!(self.args_with_type)
       return if Kernel.method_defined? subclass.name
 
       Kernel.class_eval %Q{
@@ -15,27 +23,30 @@ module Dun
 
     end
 
-    class MissingPatchedMethodError < StandardError
-    end
-
-    class TypeCheckError < StandardError
-    end
-
     class << self
 
-      attr_reader :args_with_type
+      def args_with_type
+        @args_with_type ||= {}
+      end
 
       def << data = {}
         new(data).call
       end
 
-      def data_reader *attrs
+      def data_reader *args
 
-        @args_with_type = attrs.first
+        attrs = []
 
-        if @args_with_type.is_a? Hash
-          attrs = args_with_type.keys
+        args.each do |arg|
+          if arg.is_a? Hash
+            args_with_type.merge! arg
+            attrs = attrs + arg.keys
+          else
+            args_with_type.delete arg
+            attrs << arg
+          end
         end
+        attrs.uniq!
 
         attrs.each do |attr|
           define_method attr do
@@ -71,7 +82,7 @@ module Dun
       if args_with_type.is_a? Hash
         type_check_list = []
         args_with_type.keys.each do |attr|
-          value = data[attr.to_sym] || data[attr.to_s]
+          value = send attr
           if args_with_type.is_a?(Hash)
             typeclass = args_with_type[attr]
             if not value.is_a? typeclass
@@ -88,6 +99,7 @@ module Dun
       end
 
     end
+
 
     def call
       return self
