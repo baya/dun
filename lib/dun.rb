@@ -18,13 +18,24 @@ module Dun
     class MissingPatchedMethodError < StandardError
     end
 
+    class TypeCheckError < StandardError
+    end
+
     class << self
+
+      attr_reader :args_with_type
 
       def << data = {}
         new(data).call
       end
 
       def data_reader *attrs
+
+        @args_with_type = attrs.first
+
+        if @args_with_type.is_a? Hash
+          attrs = args_with_type.keys
+        end
 
         attrs.each do |attr|
           define_method attr do
@@ -56,6 +67,26 @@ module Dun
 
     def initialize data
       @data = data
+
+      if args_with_type.is_a? Hash
+        type_check_list = []
+        args_with_type.keys.each do |attr|
+          value = data[attr.to_sym] || data[attr.to_s]
+          if args_with_type.is_a?(Hash)
+            typeclass = args_with_type[attr]
+            if not value.is_a? typeclass
+              msg = "Need a #{typeclass}, but given a #{value.class}"
+              type_check_list << [attr, msg]
+            end
+          end
+        end
+
+        if type_check_list.length > 0
+          msg = type_check_list.map{|tc| ["#{tc[0]}, #{tc[1]}"]}.join("; ")
+          raise TypeCheckError, msg
+        end
+      end
+
     end
 
     def call
@@ -63,6 +94,10 @@ module Dun
     end
 
     private
+
+    def args_with_type
+      self.class.args_with_type
+    end
 
     def const name
       self.class.const_get name
@@ -73,5 +108,4 @@ module Dun
     end
 
   end
-
 end
