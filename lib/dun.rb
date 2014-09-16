@@ -78,26 +78,7 @@ module Dun
 
     def initialize data
       @data = data
-
-      if args_with_type.is_a? Hash
-        type_check_list = []
-        args_with_type.keys.each do |attr|
-          value = send attr
-          if args_with_type.is_a?(Hash)
-            typeclass = args_with_type[attr]
-            if not value.is_a? typeclass
-              msg = "Need a #{typeclass}, but given a #{value.class}"
-              type_check_list << [attr, msg]
-            end
-          end
-        end
-
-        if type_check_list.length > 0
-          msg = type_check_list.map{|tc| ["#{tc[0]}, #{tc[1]}"]}.join("; ")
-          raise TypeCheckError, msg
-        end
-      end
-
+      check_args_type
     end
 
 
@@ -106,6 +87,23 @@ module Dun
     end
 
     private
+
+    def check_args_type
+      type_check_list = []
+      args_with_type.keys.each do |attr|
+        value = send attr
+        typeclass = args_with_type[attr]
+        if not value.is_a? typeclass
+          msg = "Need a/an #{typeclass}, but given a/an #{value.class}"
+          type_check_list << [attr, msg]
+        end
+      end
+
+      if type_check_list.length > 0
+        msg = type_check_list.map{|tc| ["#{tc[0]}, #{tc[1]}"]}.join("; ")
+        raise TypeCheckError, msg
+      end
+    end
 
     def args_with_type
       self.class.args_with_type
