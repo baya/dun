@@ -1,30 +1,55 @@
+# -*- coding: utf-8 -*-
 module Dun
   class Land
     attr_reader :data
 
+    class MissingPatchedMethodError < StandardError
+    end
+
+    class TypeCheckError < StandardError
+    end
+
     def self.inherited subclass
+      subclass.args_with_type.merge!(self.args_with_type)
       return if Kernel.method_defined? subclass.name
 
       Kernel.class_eval %Q{
+
+        private
         def #{subclass.name} data = {}, &p
           #{subclass.name}.new(data).call &p
         end
+
       }
 
     rescue SyntaxError, TypeError
 
     end
 
-    class MissingPatchedMethodError < StandardError
-    end
-
     class << self
+
+      def args_with_type
+        @args_with_type ||= {}
+      end
 
       def << data = {}
         new(data).call
       end
 
-      def data_reader *attrs
+      def data_reader *args
+
+        attrs = []
+
+        args.each do |arg|
+          if arg.is_a? Hash
+            args_with_type.merge! arg
+            attrs = attrs + arg.keys
+          else
+            args_with_type.delete arg
+            attrs << arg
+          end
+        end
+        attrs.uniq!
 
         attrs.each do |attr|
           define_method attr do
@@ -56,7 +81,9 @@ module Dun
 
     def initialize data
       @data = data
+      check_args_type
     end
+
 
     def call
       return self
@@ -64,7 +91,28 @@ module Dun
 
     private
 
-    def const_get name
+    def check_args_type
+      type_check_list = []
+      args_with_type.keys.each do |attr|
+        value = send attr
+        typeclass = args_with_type[attr]
+        if not value.is_a? typeclass
+          msg = "Need a/an #{typeclass}, but given a/an #{value.class}"
+          type_check_list << [attr, msg]
+        end
+      end
+
+      if type_check_list.length > 0
+        msg = type_check_list.map{|tc| ["#{tc[0]}, #{tc[1]}"]}.join("; ")
+        raise TypeCheckError, msg
+      end
+    end
+
+    def args_with_type
+      self.class.args_with_type
+    end
+
+    def const name
       self.class.const_get name
     end
 
@@ -73,5 +121,4 @@ module Dun
     end
 
   end
-
 end
