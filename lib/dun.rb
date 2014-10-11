@@ -14,9 +14,12 @@ module Dun
       return if Kernel.method_defined? subclass.name
 
       Kernel.class_eval %Q{
+
+        private
         def #{subclass.name} data = {}, &p
           #{subclass.name}.new(data).call &p
         end
+
       }
 
     rescue SyntaxError, TypeError
